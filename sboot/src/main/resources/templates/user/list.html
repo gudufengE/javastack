@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!--<meta charset="UTF-8">-->
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{/res/bootstrap-3.3.7-dist/css/bootstrap.css}"></link>
+
+</head>
+
+<body class="container">
+<br/>
+<!--<h1>欢迎：${cUser.name}</h1>-->
+<h2>用户列表</h2>
+<br/><br/>
+<div class="with:80%">
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <td>姓名</td>
+            <td>QQ</td>
+            <td>年龄</td>
+            <th>Edit</th>
+            <th>Delete</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="user : ${users}">
+            <td th:text="${user.name}"></td>
+            <td th:text="${user.qq}"></td>
+            <td th:text="${user.age}"></td>
+            <td><a th:href="@{/user/toedit(id=${user.userid})}">edit</a></td>
+            <td><a th:href="@{/user/delete(id=${user.userid})}">delete</a></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<div class="form-group">
+    <div class="col-sm-2 control-label">
+        <a href="/user/toadd" th:href="@{/user/toadd}" class="btn btn-info">add</a>
+    </div>
+</div>
+
+</body>
+
+</html>
