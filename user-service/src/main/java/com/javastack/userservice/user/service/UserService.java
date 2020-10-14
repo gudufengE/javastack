@@ -1,6 +1,8 @@
 
 package com.javastack.userservice.user.service;
 
+import brave.Tracer;
+
 import com.javastack.publiccomponent.utils.IdUtils;
 import com.javastack.userservice.user.api.UserDto;
 import com.javastack.userservice.user.entity.User;
@@ -22,6 +24,9 @@ import java.util.stream.Collectors;
 @Service
 public class UserService {
     private static List<User> users = new ArrayList<>();
+
+    @Autowired
+    protected Tracer tracer;
 
     @Value("${server.port}")
     private int userservicePort = 0;
@@ -63,9 +68,15 @@ public class UserService {
 
         if (null == user) {
             user = new User(userDto.getNickname(), userDto.getAvatar());
+        }else{
+            user.setNickname(userDto.getNickname());
+            user.setAvatar(userDto.getAvatar());
         }
 
 //        this.userRepository.save(user);  //TODO
+
+        // 发送用户更新消息
+        this.sendMsg(UserMsg.UA_UPDATE, user, user.getId());
 
         return new UserDto(user, userservicePort);
     }
@@ -74,6 +85,8 @@ public class UserService {
 
 //        this.userRepository.delete(id); //TODO
         users.remove(getUser(id + ""));
+        // 发送用户删除消息
+        this.sendMsg(UserMsg.UA_DELETE, null, id);
     }
 
     public User getUser(String userid) {
@@ -88,5 +101,15 @@ public class UserService {
         }
 
         return null;
+    }
+
+    @Autowired
+    protected UserMsgSender userMsgSender;
+    protected void sendMsg(String action, User user, Long userId) {
+        this.userMsgSender.sendMsg(new UserMsg(action, userId, this.getTracerId(), user));
+    }
+
+    protected String getTracerId() {
+        return this.tracer.currentSpan().context().traceIdString();//.traceIdString();
     }
 }

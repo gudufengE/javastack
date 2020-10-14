@@ -190,11 +190,11 @@ public class ProductEndpoint {
     protected UserDto loadUserEx(Long id) {
         UserDto userDto = this.userRedisRepository.findOne(id);
         if (null != userDto) {
-            this.logger.debug("已从Redis缓存中获取到用户:{} 的信息", id);
+            this.logger.info("已从Redis缓存中获取到用户:{} 的信息", id);
             return userDto;
         }
 
-        this.logger.debug("Redis缓存中不存在用户:{} 的信息，尝试从远程进行加载", id);
+        this.logger.info("Redis缓存中不存在用户:{} 的信息，尝试从远程进行加载", id);
         userDto = this.userService.load(id);
         if (null != userDto) {
             this.userRedisRepository.saveUser(userDto);

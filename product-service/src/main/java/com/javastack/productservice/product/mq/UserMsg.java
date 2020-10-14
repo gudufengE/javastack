@@ -1,7 +1,6 @@
-package com.javastack.userservice.user.service;
+package com.javastack.productservice.product.mq;
 
 import com.google.common.base.MoreObjects;
-import com.javastack.userservice.user.entity.User;
 
 /**
  * 用户消息

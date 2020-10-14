@@ -18,19 +18,19 @@ import javax.annotation.PostConstruct;
 public class UserRedisRepository {
     public static final String USER_KEY_PRE = "user:";
 
-    @Autowired
-    @Qualifier("userRedisTemplate")
-    private RedisTemplate<String, UserDto> userRedisTemplate;
+//    @Autowired
+//    @Qualifier("userRedisTemplate")
+//    private RedisTemplate<String, UserDto> redisTemplate;
     private ValueOperations<String, UserDto> operations;
 
-//    @Autowired
-//    RedisTemplate redisTemplate;  //k-v, k、v都是对象
+    @Autowired
+    private RedisTemplate redisTemplate;  //k-v, k、v都是对象
 //    @Autowired
 //    StringRedisTemplate stringRedisTemplate;  //k-v, k、v都要求字符串
 
     @PostConstruct
     private void init() {
-        this.operations = this.userRedisTemplate.opsForValue();
+        this.operations = this.redisTemplate.opsForValue();
     }
 
     /**
@@ -49,7 +49,7 @@ public class UserRedisRepository {
      */
     public UserDto findOne(Long userId) {
         String key = this.buildKey(userId);
-        if (!this.userRedisTemplate.hasKey(key))
+        if (!this.redisTemplate.hasKey(key))
             return null;
 
         return this.operations.get(key);
@@ -60,7 +60,7 @@ public class UserRedisRepository {
      * @param userId
      */
     public void delete(Long userId) {
-        this.userRedisTemplate.delete(this.buildKey(userId));
+        this.redisTemplate.delete(this.buildKey(userId));
     }
 
     /**

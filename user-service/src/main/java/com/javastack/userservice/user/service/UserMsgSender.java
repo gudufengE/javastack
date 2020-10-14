@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 public class UserMsgSender {
     protected Logger logger = LoggerFactory.getLogger(this.getClass());
 
+    //消息发送接口
     private Source source;
 
     @Autowired
@@ -23,7 +24,9 @@ public class UserMsgSender {
     }
 
     public void sendMsg(UserMsg userMsg) {
-        this.logger.debug("发送用户变更消息:{} ", userMsg);
+
+        System.out.println("发送用户【"+userMsg.getAction()+"】消息" + userMsg);
+        this.logger.info("发送用户【"+userMsg.getAction()+"】消息:{} ", userMsg);
 
         // 发送消息
         this.source.output().send(MessageBuilder.withPayload(userMsg).build());
